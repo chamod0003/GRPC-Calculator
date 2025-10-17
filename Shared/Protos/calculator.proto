@@ -1,0 +1,44 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "GrpcCalculator";
+
+package calculator;
+
+// The calculator service definition
+service Calculator {
+  // Calculates sum of numbers from start to end (partial calculation)
+  rpc CalculatePartialSum (PartialSumRequest) returns (SumReply);
+  
+  // Health check for failover
+  rpc HealthCheck (HealthCheckRequest) returns (HealthCheckReply);
+}
+
+// Request for partial sum calculation with range
+message PartialSumRequest {
+  int32 start = 1;
+  int32 end = 2;
+  map<string, int32> vector_clock = 3;
+  string request_id = 4;
+}
+
+// The response message containing the sum and vector clock
+message SumReply {
+  int64 partial_sum = 1;
+  string server_name = 2;
+  map<string, int32> vector_clock = 3;
+  string timestamp = 4;
+  int32 range_start = 5;
+  int32 range_end = 6;
+  string request_id = 7;
+}
+
+// Health check messages
+message HealthCheckRequest {
+  string client_id = 1;
+}
+
+message HealthCheckReply {
+  bool is_healthy = 1;
+  string server_name = 2;
+  int64 uptime_seconds = 3;
+}
